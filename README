@@ -21,12 +21,12 @@ This PyFFmpeg version has been test with ...
 		FFmpeg version git-35d7d6f 
 		(http://git.ffmpeg.org/?p=ffmpeg.git;a=snapshot;h=35d7d6f7489c75aaa2fcb39820fb25b0fd44524b;sf=tgz)
 		with its libraries 
-			libavutil    50. 39. 0 
-			libavcodec   52.113. 2 
-			libavformat  52.102. 0 
-			libavdevice  52.  2. 3 
-			libavfilter   1. 76. 0 
-			libswscale    0. 12. 0 
+			libavutil    51.  1. 0
+			libavcodec   53.  1. 1
+			libavformat  53.  0. 3
+			libavdevice  53.  0. 0
+			libavfilter   2.  3. 1
+			libswscale    1.  1. 0
 
 	Operating System
 

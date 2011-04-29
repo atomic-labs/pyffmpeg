@@ -103,10 +103,9 @@ cdef extern from "libavutil/mathematics.h":
 # ok libavutil    50. 39. 0
 cdef extern from "libavutil/mem.h":
     # size_t is used 
-    #ctypedef unsigned long FF_INTERNAL_MEM_TYPE
-    ctypedef size_t FF_INTERNAL_MEM_TYPE
-    void *av_mallocz(FF_INTERNAL_MEM_TYPE size)
-    void *av_realloc(void * ptr, FF_INTERNAL_MEM_TYPE size)
+    #ctypedef unsigned long size_t
+    void *av_mallocz(size_t size)
+    void *av_realloc(void * ptr, size_t size)
     void av_free(void *ptr)
     void av_freep(void *ptr)
     
@@ -852,15 +851,15 @@ cdef extern from "libavcodec/avcodec.h":
         CODEC_ID_FFMETADATA=0x21000,   #< Dummy codec for streams containing only metadata information.
    
 
-    # ok libavcodec   52.113. 2    
-    enum CodecType:
-        CODEC_TYPE_UNKNOWN     = AVMEDIA_TYPE_UNKNOWN
-        CODEC_TYPE_VIDEO       = AVMEDIA_TYPE_VIDEO
-        CODEC_TYPE_AUDIO       = AVMEDIA_TYPE_AUDIO
-        CODEC_TYPE_DATA        = AVMEDIA_TYPE_DATA
-        CODEC_TYPE_SUBTITLE    = AVMEDIA_TYPE_SUBTITLE
-        CODEC_TYPE_ATTACHMENT  = AVMEDIA_TYPE_ATTACHMENT
-        CODEC_TYPE_NB          = AVMEDIA_TYPE_NB
+    # ok libavutil   51.  1. 0
+    enum AVMediaType:
+        AVMEDIA_TYPE_UNKNOWN     = AVMEDIA_TYPE_UNKNOWN
+        AVMEDIA_TYPE_VIDEO       = AVMEDIA_TYPE_VIDEO
+        AVMEDIA_TYPE_AUDIO       = AVMEDIA_TYPE_AUDIO
+        AVMEDIA_TYPE_DATA        = AVMEDIA_TYPE_DATA
+        AVMEDIA_TYPE_SUBTITLE    = AVMEDIA_TYPE_SUBTITLE
+        AVMEDIA_TYPE_ATTACHMENT  = AVMEDIA_TYPE_ATTACHMENT
+        AVMEDIA_TYPE_NB          = AVMEDIA_TYPE_NB
 
 
     # ok libavcodec   52.113. 2
@@ -1014,7 +1013,7 @@ cdef extern from "libavcodec/avcodec.h":
         float       b_quant_factor
         int         rc_strategy            #< will be removed in later libav versions
         int         b_frame_strategy
-        int         hurry_up               #< hurry up amount: decoding: Set by user. 1-> Skip B-frames, 2-> Skip IDCT/dequant too, 5-> Skip everything except header
+#        int         hurry_up               #< hurry up amount: decoding: Set by user. 1-> Skip B-frames, 2-> Skip IDCT/dequant too, 5-> Skip everything except header
         AVCodec *   codec
         void *      priv_data
         int         rtp_payload_size
@@ -2046,10 +2045,10 @@ if not __registered:
 ##################################################################################
 # Some default settings
 ##################################################################################
-TS_AUDIOVIDEO={'video1':(CODEC_TYPE_VIDEO, -1,  {}), 'audio1':(CODEC_TYPE_AUDIO, -1, {})}
-TS_AUDIO={ 'audio1':(CODEC_TYPE_AUDIO, -1, {})}
-TS_VIDEO={ 'video1':(CODEC_TYPE_VIDEO, -1, {})}
-TS_VIDEO_PIL={ 'video1':(CODEC_TYPE_VIDEO, -1, {'outputmode':OUTPUTMODE_PIL})}
+TS_AUDIOVIDEO={'video1':(AVMEDIA_TYPE_VIDEO, -1,  {}), 'audio1':(AVMEDIA_TYPE_AUDIO, -1, {})}
+TS_AUDIO={ 'audio1':(AVMEDIA_TYPE_AUDIO, -1, {})}
+TS_VIDEO={ 'video1':(AVMEDIA_TYPE_VIDEO, -1, {})}
+TS_VIDEO_PIL={ 'video1':(AVMEDIA_TYPE_VIDEO, -1, {'outputmode':OUTPUTMODE_PIL})}
 
 
 ###############################################################################
@@ -2091,7 +2090,7 @@ cdef class AFFMpegReader:
     def dump(self):
         pass
 
-    def open(self,char *filename, track_selector={'video1':(CODEC_TYPE_VIDEO, -1), 'audio1':(CODEC_TYPE_AUDIO, -1)}):
+    def open(self,char *filename, track_selector={'video1':(AVMEDIA_TYPE_VIDEO, -1), 'audio1':(AVMEDIA_TYPE_AUDIO, -1)}):
         pass
 
     def close(self):
@@ -2186,7 +2185,6 @@ cdef class Track:
             skip_frame
             skip_idct
             skip_loop_filter
-            hurry_up
             dct_algo
             idct_algo
 
@@ -2196,7 +2194,7 @@ cdef class Track:
         self.observer=None
         self.support_truncated=support_truncated
         for k in args.keys():
-            if k not in [ "skip_frame", "skip_loop_filter", "skip_idct", "hurry_up", "hurry_mode", "dct_algo", "idct_algo", "check_start" ,"check_end"]:
+            if k not in [ "skip_frame", "skip_loop_filter", "skip_idct", "hurry_mode", "dct_algo", "idct_algo", "check_start" ,"check_end"]:
                 sys.stderr.write("warning unsupported arguments in stream initialization :"+k+"\n")
         if self.Codec == NULL:
             raise IOError("Unable to get decoder")
@@ -2210,15 +2208,12 @@ cdef class Track:
             self.CodecCtx.skip_idct = AVDISCARD_NONKEY
             # deprecated
             # 1-> Skip B-frames, 2-> Skip IDCT/dequant too, 5-> Skip everything except header
-            self.CodecCtx.hurry_up=2  
         if args.has_key("skip_frame"):
             self.CodecCtx.skip_frame=args["skip_frame"]
         if args.has_key("skip_idct"):
             self.CodecCtx.skip_idct=args["skip_idct"]
         if args.has_key("skip_loop_filter"):
             self.CodecCtx.skip_loop_filter=args["skip_loop_filter"]
-        if args.has_key("hurry_up"):
-            self.CodecCtx.skip_loop_filter=args["hurry_up"]
         if args.has_key("dct_algo"):
             self.CodecCtx.dct_algo=args["dct_algo"]
         if args.has_key("idct_algo"):
@@ -2675,7 +2670,6 @@ cdef class VideoTrack(Track):
             skip_frame
             skip_idct
             skip_loop_filter
-            hurry_up
             dct_algo
             idct_algo
 
@@ -3034,12 +3028,10 @@ cdef class VideoTrack(Track):
         if (b) :
             self.CodecCtx.skip_idct = AVDISCARD_BIDIR
             self.CodecCtx.skip_frame = AVDISCARD_BIDIR
-            self.CodecCtx.hurry_up = 1
             self.hurried_frames = 0
         else:
             self.CodecCtx.skip_idct = AVDISCARD_DEFAULT
             self.CodecCtx.skip_frame = AVDISCARD_DEFAULT
-            self.CodecCtx.hurry_up = 0
 
     ########################################
     ###
@@ -3425,7 +3417,7 @@ cdef class FFMpegReader(AFFMpegReader):
                 raise IOError("Unable to find specified Track")
 
             CodecCtx = self.FormatCtx.streams[trackno].codec
-            if (s[0]==CODEC_TYPE_VIDEO):
+            if (s[0]==AVMEDIA_TYPE_VIDEO):
                 try:
                     vt=VideoTrack()
                 except:
@@ -3435,7 +3427,7 @@ cdef class FFMpegReader(AFFMpegReader):
                 vt.init0(self,trackno,  CodecCtx) ## here we are passing cpointers so we do a C call
                 vt.init(**s[2])## here we do a python call
                 self.tracks.append(vt)
-            elif (s[0]==CODEC_TYPE_AUDIO):
+            elif (s[0]==AVMEDIA_TYPE_AUDIO):
                 try:
                     at=AudioTrack()
                 except:
@@ -3560,11 +3552,11 @@ cdef class FFMpegReader(AFFMpegReader):
                 ## I don't know why it seems that Windows Cython have problem calling the correct virtual function
                 ##
                 ##
-                if ct.CodecCtx.codec_type==CODEC_TYPE_VIDEO:
+                if ct.CodecCtx.codec_type==AVMEDIA_TYPE_VIDEO:
                     processed=True
                     vt=ct
                     vt.process_packet(self.packet)
-                elif ct.CodecCtx.codec_type==CODEC_TYPE_AUDIO:
+                elif ct.CodecCtx.codec_type==AVMEDIA_TYPE_AUDIO:
                     processed=True
                     at=ct
                     at.process_packet(self.packet)
@@ -3918,17 +3910,7 @@ class profileTypes:
     FF_PROFILE_H264_HIGH_444_PREDICTIVE  = 244
     FF_PROFILE_H264_HIGH_444_INTRA       = (244|FF_PROFILE_H264_INTRA)
     FF_PROFILE_H264_CAVLC_444            = 44
-  
 
-##################################################################################
-# ok libavcodec   52.113. 2
-class CodecTypes:
-    CODEC_TYPE_UNKNOWN     = -1
-    CODEC_TYPE_VIDEO       = 0
-    CODEC_TYPE_AUDIO       = 1
-    CODEC_TYPE_DATA        = 2
-    CODEC_TYPE_SUBTITLE    = 3
-    CODEC_TYPE_ATTACHMENT  = 4
 
 ##################################################################################
 # ok libavutil    50. 39. 0
