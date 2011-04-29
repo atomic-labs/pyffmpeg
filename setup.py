@@ -75,7 +75,7 @@ if sys.platform in [ 'win32', 'win64' ] :
 
     libs = static_resolver(libs)
     libinc += [ r'/mingw/lib' ] # it seems some people require this
-    incdir = path_join(ffmpegpath, 'include') 
+    incdir = [ path_join(ffmpegpath, 'include') ]
 
 else:
     incdir = [ path_join(ffmpegpath, 'include'), "/usr/include" , "./include" ] 
