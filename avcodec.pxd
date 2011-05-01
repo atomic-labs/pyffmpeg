@@ -1046,9 +1046,9 @@ cdef extern from "libavcodec/avcodec.h":
         
 
     AVCodec *avcodec_find_encoder(CodecID id)
-    #AVCodec *avcodec_find_encoder_by_name(const char *name)
+    AVCodec *avcodec_find_encoder_by_name(char *name)
     AVCodec *avcodec_find_decoder(CodecID id)
-    #AVCodec *avcodec_find_decoder_by_name(const char *name)
+    AVCodec *avcodec_find_decoder_by_name(char *name)
     
     int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
 
