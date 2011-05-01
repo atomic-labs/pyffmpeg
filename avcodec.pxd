@@ -626,6 +626,42 @@ cdef extern from "libavcodec/avcodec.h":
         int  *        init_thread_copy       # function pointer
         int  *        update_thread_context  # function pointer
 
+    # ok libavcodec   52.113. 2  
+    struct AVPicture:
+        uint8_t *data[4]
+        int linesize[4]
+
+
+
+    enum AVSubtitleType:
+        SUBTITLE_NONE,
+        SUBTITLE_BITMAP, #< A bitmap, pict will be set
+        SUBTITLE_TEXT,   # Plain text
+        SUBTITLE_ASS
+
+    struct AVSubtitleRect:
+        int x # top left corner of pict
+        int y 
+        int w # width
+        int h # height
+        int nb_colors # number of colors
+
+        AVPicture pict
+        AVSubtitleType type
+
+        char *text # 0 terminated plain UTF-8 text
+        char *ass
+
+    struct AVSubtitle:
+        uint16_t format # 0 = graphics
+        uint32_t start_display_time # relative to packet pts, in ms
+        uint32_t end_display_time
+        unsigned num_rects
+        AVSubtitleRect **rects
+        int64_t pts    # Same as packet pts, in AV_TIME_BASE
+
+
+
 
     # ok libavcodec   52.113. 2
     struct AVFrame:
@@ -913,12 +949,6 @@ cdef extern from "libavcodec/avcodec.h":
         uint64_t    vbv_delay               #< VEG: VBV delay coded in the last frame (in periods of a 27 MHz clock)
     
     
-    # ok libavcodec   52.113. 2  
-    struct AVPicture:
-        uint8_t *data[4]
-        int linesize[4]
-
-
     # AVCodecParserContext.flags
     enum:
         PARSER_FLAG_COMPLETE_FRAMES          = 0x0001
@@ -1015,7 +1045,10 @@ cdef extern from "libavcodec/avcodec.h":
         int64_t last_pos                                   #< * Previous frame byte position.
         
 
+    AVCodec *avcodec_find_encoder(CodecID id)
+    #AVCodec *avcodec_find_encoder_by_name(const char *name)
     AVCodec *avcodec_find_decoder(CodecID id)
+    #AVCodec *avcodec_find_decoder_by_name(const char *name)
     
     int avcodec_open(AVCodecContext *avctx, AVCodec *codec)
 
@@ -1028,7 +1061,7 @@ cdef extern from "libavcodec/avcodec.h":
     int avcodec_decode_video2(AVCodecContext *avctx, AVFrame *picture,
                          int *got_picture_ptr,
                          AVPacket *avpkt)
-                         
+    
     # TODO                     
     # deprecated ... use instead avcodec_decode_audio3
     #int avcodec_decode_audio2(AVCodecContext *avctx, #AVFrame *picture,
@@ -1037,7 +1070,12 @@ cdef extern from "libavcodec/avcodec.h":
     int avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples,
                          int *frame_size_ptr,
                          AVPacket *avpkt)
-
+    int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size,
+                         int16_t *samples)
+    int avcodec_encode_video(AVCodecContext *avctx, uint8_t *buf, int buf_size,
+                         AVFrame *pict)
+#    int avcodec_encode_subtitle(AVCodecContext *avctx, uint8_t *buf, int buf_size,
+#                            const AVSubtitle *sub)
     int avpicture_fill(AVPicture *picture, uint8_t *ptr,
                        PixelFormat pix_fmt, int width, int height)
     int avpicture_layout(AVPicture* src, PixelFormat pix_fmt, 
