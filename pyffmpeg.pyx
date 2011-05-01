@@ -59,7 +59,7 @@ import traceback
 from avutil cimport *
 from avcodec cimport *
 from avformat cimport *
-from avscale cimport *
+from swscale cimport *
 
 
 ##################################################################################
