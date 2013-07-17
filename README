@@ -10,42 +10,30 @@ This PyFFmpeg version has been test with ...
 
 	Python
 
-		Python 2.6.6
+		Python 2.7.4
 
 	Cython
 
-		Cython 0.14.1
+		Cython 0.19.1
 
 	FFmpeg (git://git.ffmpeg.org/ffmpeg.git)
-
-		FFmpeg version git-35d7d6f 
-		(http://git.ffmpeg.org/?p=ffmpeg.git;a=snapshot;h=35d7d6f7489c75aaa2fcb39820fb25b0fd44524b;sf=tgz)
-		with its libraries 
-			libavutil    50. 39. 0 
-			libavcodec   52.113. 2 
-			libavformat  52.102. 0 
-			libavdevice  52.  2. 3 
-			libavfilter   1. 76. 0 
-			libswscale    0. 12. 0 
+		FFmpeg version 0.8.6-6:0.8.6-1ubuntu2
+			libavutil    51. 22. 1 / 51. 22. 1
+			libavcodec   53. 35. 0 / 53. 35. 0
+			libavformat  53. 21. 1 / 53. 21. 1
+			libavdevice  53.  2. 0 / 53.  2. 0
+			libavfilter   2. 15. 0 /  2. 15. 0
+			libswscale    2.  1. 0 /  2.  1. 0
+			libpostproc  52.  0. 0 / 52.  0. 0
 
 	Operating System
-
-		Windows (mingw)
-		MacOS X 10.6.6
-		Unix
+		Linux (tested on Ubuntu 12.04 and higher)
 
 You can install and test PyFFmpeg as follows:
 
-	1. Edit setup.py and adapt ffmpegpath to your configuration
+	1. Execute "sudo python setup.py install"
 
-	2. Execute "sudo python setup.py install" 
-
-	3. Check if PyFFmpeg is working using the testInstalledPyFFmpeg.py file
+	2. Check if PyFFmpeg is working using the testInstalledPyFFmpeg.py file
 
 Please report issues as well as configuration details for your working 
 PyFFmpeg installations at <martin.haller@computer.org>
-
- 
-
-
-
