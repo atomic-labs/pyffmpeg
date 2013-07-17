@@ -94,25 +94,23 @@ cdef extern from "Python.h":
 
 
 ##################################################################################
-# ok libavutil    50. 39. 0 
+# ok libavutil    51. 22. 1
 cdef extern from "libavutil/mathematics.h":
     int64_t av_rescale(int64_t a, int64_t b, int64_t c)
 
 
 ##################################################################################
-# ok libavutil    50. 39. 0
+# ok libavutil    51. 22. 1
 cdef extern from "libavutil/mem.h":
     # size_t is used 
-    #ctypedef unsigned long FF_INTERNAL_MEM_TYPE
-    ctypedef size_t FF_INTERNAL_MEM_TYPE
-    void *av_mallocz(FF_INTERNAL_MEM_TYPE size)
-    void *av_realloc(void * ptr, FF_INTERNAL_MEM_TYPE size)
+    void *av_mallocz(size_t size)
+    void *av_realloc(void * ptr, size_t size)
     void av_free(void *ptr)
     void av_freep(void *ptr)
     
     
 ##################################################################################
-# ok libavutil    50. 39. 0
+# ok libavutil    51. 22. 1
 cdef extern from "libavutil/pixfmt.h":
     cdef enum PixelFormat:
         PIX_FMT_NONE= -1,
@@ -194,7 +192,7 @@ cdef extern from "libavutil/pixfmt.h":
 
 
 ##################################################################################
-# ok libavutil    50. 39. 0
+# ok libavutil    51. 22. 1
 cdef extern from "libavutil/avutil.h":
     # from avutil.h
     enum AVMediaType:
@@ -216,7 +214,7 @@ cdef extern from "libavutil/avutil.h":
 
 
 ##################################################################################
-# ok libavutil    50. 39. 0
+# ok libavutil    51. 22. 1
 cdef extern from "libavutil/samplefmt.h":
     enum AVSampleFormat:
         AV_SAMPLE_FMT_NONE = -1,
@@ -229,7 +227,7 @@ cdef extern from "libavutil/samplefmt.h":
 
 
 ##################################################################################
-# ok libavutil    50. 39. 0
+# ok libavutil    51. 22. 1
 cdef extern from "libavutil/rational.h":
     struct AVRational:
         int num                    #< numerator
@@ -237,7 +235,7 @@ cdef extern from "libavutil/rational.h":
 
 
 ##################################################################################
-# ok libavformat  52.102. 0 
+# ok libavformat  53. 21. 1
 cdef extern from "libavformat/avio.h":
     
     struct AVIOContext:
@@ -316,7 +314,7 @@ cdef extern from "libavformat/avio.h":
     
     
 ##################################################################################
-# ok libavcodec   52.113. 2
+# ok libavcodec   53. 35. 0
 cdef extern from "libavcodec/avcodec.h":
     # use an unamed enum for defines
     cdef enum:
@@ -483,7 +481,7 @@ cdef extern from "libavcodec/avcodec.h":
         FF_LEVEL_UNKNOWN       = -99
         
         
-    # ok libavcodec   52.113. 2    
+    # ok libavcodec   53. 35. 0
     enum AVDiscard:
         # we leave some space between them for extensions (drop some keyframes for intra only or drop just some bidir frames)
         AVDISCARD_NONE   = -16 # discard nothing
@@ -493,7 +491,7 @@ cdef extern from "libavcodec/avcodec.h":
         AVDISCARD_NONKEY =  32 # discard all frames except keyframes
         AVDISCARD_ALL    =  48 # discard all
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     enum AVColorPrimaries:
         AVCOL_PRI_BT709       = 1    #< also ITU-R BT1361 / IEC 61966-2-4 / SMPTE RP177 Annex B
         AVCOL_PRI_UNSPECIFIED = 2
@@ -505,7 +503,7 @@ cdef extern from "libavcodec/avcodec.h":
         AVCOL_PRI_NB          = 9    #< Not part of ABI
       
       
-    # ok libavcodec   52.113. 2       
+    # ok libavcodec   53. 35. 0
     enum AVColorTransferCharacteristic:
         AVCOL_TRC_BT709       = 1    #< also ITU-R BT1361
         AVCOL_TRC_UNSPECIFIED = 2
@@ -514,7 +512,7 @@ cdef extern from "libavcodec/avcodec.h":
         AVCOL_TRC_NB          = 6    #< Not part of ABI
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     enum AVColorSpace:
         AVCOL_SPC_RGB         = 0
         AVCOL_SPC_BT709       = 1    #< also ITU-R BT1361 / IEC 61966-2-4 xvYCC709 / SMPTE RP177 Annex B
@@ -526,7 +524,7 @@ cdef extern from "libavcodec/avcodec.h":
         AVCOL_SPC_NB          = 8    #< Not part of ABI
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     enum AVColorRange:
         AVCOL_RANGE_UNSPECIFIED = 0
         AVCOL_RANGE_MPEG        = 1  #< the normal 219*2^(n-8) "MPEG" YUV ranges
@@ -534,7 +532,7 @@ cdef extern from "libavcodec/avcodec.h":
         AVCOL_RANGE_NB          = 3  #< Not part of ABI
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     enum AVChromaLocation:
         AVCHROMA_LOC_UNSPECIFIED = 0
         AVCHROMA_LOC_LEFT        = 1    #< mpeg2/4, h264 default
@@ -546,7 +544,7 @@ cdef extern from "libavcodec/avcodec.h":
         AVCHROMA_LOC_NB          = 7    #< Not part of ABI
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     enum CodecID:
         CODEC_ID_NONE,
     
@@ -852,18 +850,18 @@ cdef extern from "libavcodec/avcodec.h":
         CODEC_ID_FFMETADATA=0x21000,   #< Dummy codec for streams containing only metadata information.
    
 
-    # ok libavcodec   52.113. 2    
+    # ok libavcodec   53. 35. 0
     enum CodecType:
-        CODEC_TYPE_UNKNOWN     = AVMEDIA_TYPE_UNKNOWN
-        CODEC_TYPE_VIDEO       = AVMEDIA_TYPE_VIDEO
-        CODEC_TYPE_AUDIO       = AVMEDIA_TYPE_AUDIO
-        CODEC_TYPE_DATA        = AVMEDIA_TYPE_DATA
-        CODEC_TYPE_SUBTITLE    = AVMEDIA_TYPE_SUBTITLE
-        CODEC_TYPE_ATTACHMENT  = AVMEDIA_TYPE_ATTACHMENT
-        CODEC_TYPE_NB          = AVMEDIA_TYPE_NB
+        AVMEDIA_TYPE_UNKNOWN     = AVMEDIA_TYPE_UNKNOWN
+        AVMEDIA_TYPE_VIDEO       = AVMEDIA_TYPE_VIDEO
+        AVMEDIA_TYPE_AUDIO       = AVMEDIA_TYPE_AUDIO
+        AVMEDIA_TYPE_DATA        = AVMEDIA_TYPE_DATA
+        AVMEDIA_TYPE_SUBTITLE    = AVMEDIA_TYPE_SUBTITLE
+        AVMEDIA_TYPE_ATTACHMENT  = AVMEDIA_TYPE_ATTACHMENT
+        AVMEDIA_TYPE_NB          = AVMEDIA_TYPE_NB
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     struct AVPanScan:
         int id
         int width
@@ -871,7 +869,7 @@ cdef extern from "libavcodec/avcodec.h":
         int16_t position[3][2]
 
   
-  # ok libavcodec   52.113. 2
+  # ok libavcodec   53. 35. 0
     struct AVPacket:
         int64_t pts            #< presentation time stamp in time_base units
         int64_t dts            #< decompression time stamp in time_base units
@@ -902,13 +900,13 @@ cdef extern from "libavcodec/avcodec.h":
         #===============================================================================
         int64_t convergence_duration
   
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     struct AVProfile:
         int         profile
         char *      name                    #< short name for the profile
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     struct AVCodec:
         char *        name
         AVMediaType   type
@@ -936,7 +934,7 @@ cdef extern from "libavcodec/avcodec.h":
         int  *        update_thread_context  # function pointer
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     struct AVFrame:
         uint8_t *data[4]                        #< pointer to the picture planes
         int linesize[4]                      #<
@@ -981,7 +979,7 @@ cdef extern from "libavcodec/avcodec.h":
         void *thread_opaque                  #< used by multithreading to store frame-specific info
 
 
-    # ok libavcodec   52.113. 2
+    # ok libavcodec   53. 35. 0
     struct AVCodecContext:
         void *      av_class
         int         bit_rate
@@ -1222,7 +1220,7 @@ cdef extern from "libavcodec/avcodec.h":
         uint64_t    vbv_delay               #< VEG: VBV delay coded in the last frame (in periods of a 27 MHz clock)
     
     
-    # ok libavcodec   52.113. 2  
+    # ok libavcodec   53. 35. 0
     struct AVPicture:
         uint8_t *data[4]
         int linesize[4]
@@ -1443,7 +1441,7 @@ cdef extern from "libavcodec/avcodec.h":
 
 
 ##################################################################################
-# ok libavformat  52.102. 0
+# ok libavformat  53. 21. 1
 cdef extern from "libavformat/avformat.h":
 
     enum:    
@@ -1878,7 +1876,7 @@ cdef extern from "libavformat/avformat.h":
 
 
 ##################################################################################
-# ok libswscale    0. 12. 0 
+# ok libswscale    2.  1. 0
 cdef extern from "libswscale/swscale.h":
     cdef enum:
         SWS_FAST_BILINEAR,
@@ -1944,9 +1942,8 @@ except:
 
 
 # original definiton as define in libavutil/avutil.h
-cdef AVRational AV_TIME_BASE_Q
-AV_TIME_BASE_Q.num = 1
-AV_TIME_BASE_Q.den = AV_TIME_BASE
+cdef extern from "libavutil/rational.h":
+    AVRational AV_TIME_BASE_Q
 
 AVFMT_NOFILE = 1
 
@@ -2046,10 +2043,10 @@ if not __registered:
 ##################################################################################
 # Some default settings
 ##################################################################################
-TS_AUDIOVIDEO={'video1':(CODEC_TYPE_VIDEO, -1,  {}), 'audio1':(CODEC_TYPE_AUDIO, -1, {})}
-TS_AUDIO={ 'audio1':(CODEC_TYPE_AUDIO, -1, {})}
-TS_VIDEO={ 'video1':(CODEC_TYPE_VIDEO, -1, {})}
-TS_VIDEO_PIL={ 'video1':(CODEC_TYPE_VIDEO, -1, {'outputmode':OUTPUTMODE_PIL})}
+TS_AUDIOVIDEO={'video1':(AVMEDIA_TYPE_VIDEO, -1,  {}), 'audio1':(AVMEDIA_TYPE_AUDIO, -1, {})}
+TS_AUDIO={ 'audio1':(AVMEDIA_TYPE_AUDIO, -1, {})}
+TS_VIDEO={ 'video1':(AVMEDIA_TYPE_VIDEO, -1, {})}
+TS_VIDEO_PIL={ 'video1':(AVMEDIA_TYPE_VIDEO, -1, {'outputmode':OUTPUTMODE_PIL})}
 
 
 ###############################################################################
@@ -2091,7 +2088,7 @@ cdef class AFFMpegReader:
     def dump(self):
         pass
 
-    def open(self,char *filename, track_selector={'video1':(CODEC_TYPE_VIDEO, -1), 'audio1':(CODEC_TYPE_AUDIO, -1)}):
+    def open(self,char *filename, track_selector={'video1':(AVMEDIA_TYPE_VIDEO, -1), 'audio1':(AVMEDIA_TYPE_AUDIO, -1)}):
         pass
 
     def close(self):
@@ -2208,9 +2205,6 @@ cdef class Track:
             self.CodecCtx.skip_loop_filter = AVDISCARD_NONKEY
             self.CodecCtx.skip_frame = AVDISCARD_NONKEY
             self.CodecCtx.skip_idct = AVDISCARD_NONKEY
-            # deprecated
-            # 1-> Skip B-frames, 2-> Skip IDCT/dequant too, 5-> Skip everything except header
-            self.CodecCtx.hurry_up=2  
         if args.has_key("skip_frame"):
             self.CodecCtx.skip_frame=args["skip_frame"]
         if args.has_key("skip_idct"):
@@ -3034,12 +3028,10 @@ cdef class VideoTrack(Track):
         if (b) :
             self.CodecCtx.skip_idct = AVDISCARD_BIDIR
             self.CodecCtx.skip_frame = AVDISCARD_BIDIR
-            self.CodecCtx.hurry_up = 1
             self.hurried_frames = 0
         else:
             self.CodecCtx.skip_idct = AVDISCARD_DEFAULT
             self.CodecCtx.skip_frame = AVDISCARD_DEFAULT
-            self.CodecCtx.hurry_up = 0
 
     ########################################
     ###
@@ -3303,7 +3295,7 @@ cdef class FFMpegReader(AFFMpegReader):
             fmt=av_probe_input_format(&pd,0)
         
         if (fmt==NULL) or (not (fmt.flags & AVFMT_NOFILE)):
-            ret = avio_open(&self.FormatCtx.pb, filename, 0)
+            ret = avio_open(&self.FormatCtx.pb, filename, 1)
             if ret < 0:
                 raise IOError("Unable to open file %s (avio_open)" % filename)
             if (buf_size>0):
@@ -3425,7 +3417,7 @@ cdef class FFMpegReader(AFFMpegReader):
                 raise IOError("Unable to find specified Track")
 
             CodecCtx = self.FormatCtx.streams[trackno].codec
-            if (s[0]==CODEC_TYPE_VIDEO):
+            if (s[0]==AVMEDIA_TYPE_VIDEO):
                 try:
                     vt=VideoTrack()
                 except:
@@ -3435,7 +3427,7 @@ cdef class FFMpegReader(AFFMpegReader):
                 vt.init0(self,trackno,  CodecCtx) ## here we are passing cpointers so we do a C call
                 vt.init(**s[2])## here we do a python call
                 self.tracks.append(vt)
-            elif (s[0]==CODEC_TYPE_AUDIO):
+            elif (s[0]==AVMEDIA_TYPE_AUDIO):
                 try:
                     at=AudioTrack()
                 except:
@@ -3560,11 +3552,11 @@ cdef class FFMpegReader(AFFMpegReader):
                 ## I don't know why it seems that Windows Cython have problem calling the correct virtual function
                 ##
                 ##
-                if ct.CodecCtx.codec_type==CODEC_TYPE_VIDEO:
+                if ct.CodecCtx.codec_type==AVMEDIA_TYPE_VIDEO:
                     processed=True
                     vt=ct
                     vt.process_packet(self.packet)
-                elif ct.CodecCtx.codec_type==CODEC_TYPE_AUDIO:
+                elif ct.CodecCtx.codec_type==AVMEDIA_TYPE_AUDIO:
                     processed=True
                     at=ct
                     at.process_packet(self.packet)
@@ -3878,7 +3870,7 @@ class VideoStream:
 ##################################################################################
 
 ##################################################################################
-# ok libavcodec   52.113. 2
+# ok libavcodec   53. 35. 0
 # defined in libavcodec/avcodec.h for AVCodecContext.profile
 class profileTypes:
     FF_PROFILE_UNKNOWN  = -99
@@ -3921,17 +3913,17 @@ class profileTypes:
   
 
 ##################################################################################
-# ok libavcodec   52.113. 2
+# ok libavcodec   53. 35. 0
 class CodecTypes:
-    CODEC_TYPE_UNKNOWN     = -1
-    CODEC_TYPE_VIDEO       = 0
-    CODEC_TYPE_AUDIO       = 1
-    CODEC_TYPE_DATA        = 2
-    CODEC_TYPE_SUBTITLE    = 3
-    CODEC_TYPE_ATTACHMENT  = 4
+    AVMEDIA_TYPE_UNKNOWN     = -1
+    AVMEDIA_TYPE_VIDEO       = 0
+    AVMEDIA_TYPE_AUDIO       = 1
+    AVMEDIA_TYPE_DATA        = 2
+    AVMEDIA_TYPE_SUBTITLE    = 3
+    AVMEDIA_TYPE_ATTACHMENT  = 4
 
 ##################################################################################
-# ok libavutil    50. 39. 0
+# ok libavutil    51. 22. 1
 class mbTypes:
     MB_TYPE_INTRA4x4   = 0x0001
     MB_TYPE_INTRA16x16 = 0x0002 #FIXME H.264-specific
