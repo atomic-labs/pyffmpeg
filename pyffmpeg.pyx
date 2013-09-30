@@ -2347,7 +2347,7 @@ cdef class Track:
         #pts=av_rescale(seconds*AV_TIME_BASE, self.stream.time_base.den, self.stream.time_base.num*AV_TIME_BASE)
         self.seek_to_pts(pts)
 
-    def seek_to_pts(self,  unsigned long long int pts):
+    def seek_to_pts(self,  long long int pts):
         """ Seek to the specified PTS
 
             Note that seeking is always bit more complicated when we want to be exact.
