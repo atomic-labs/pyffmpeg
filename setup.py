@@ -75,7 +75,7 @@ if sys.platform in [ 'win32', 'win64' ] :
 
     libs = static_resolver(libs)
     libinc += [ r'/mingw/lib' ] # it seems some people require this
-    incdir = path_join(ffmpegpath, 'include') 
+    incdir = [ path_join(ffmpegpath, 'include') ]
 
 else:
     incdir = [ path_join(ffmpegpath, 'include'), "/usr/include" , "./include" ] 
@@ -99,11 +99,51 @@ if with_numpy:
                        include_dirs = incdir,
                        library_dirs = libinc,
                        libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('avcodec', [ 'avcodec.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('avformat', [ 'avformat.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('avutil', [ 'avutil.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('swscale', [ 'swscale.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
                        extra_compile_args=extra_compiler_args)
                      ]
 else:
         ext_modules=[ Extension('pyffmpeg', [ 'pyffmpeg.pyx' ],
                        include_dirs = incdir, 
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('avcodec', [ 'avcodec.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('avformat', [ 'avformat.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('avutil', [ 'avutil.pxd' ],
+                       include_dirs = incdir,
+                       library_dirs = libinc,
+                       libraries = libs,
+                       extra_compile_args=extra_compiler_args),
+                      Extension('swscale', [ 'swscale.pxd' ],
+                       include_dirs = incdir,
                        library_dirs = libinc,
                        libraries = libs,
                        extra_compile_args=extra_compiler_args)
